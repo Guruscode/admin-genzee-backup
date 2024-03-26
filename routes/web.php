@@ -1,11 +1,12 @@
 <?php
 
+use App\Models\Gift;
 use App\Models\Sticker;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\StickersController;
-use App\Models\Gift;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +48,8 @@ Route::prefix('admin')->group(function () {
     Route::post('/stickers', [StickersController::class, 'store'])->name('stickers.store');
     Route::delete('/stickers/{sticker}', [StickersController::class, 'destroy'])->name('stickers.destroy');
 
-
+    Route::get('/firebase/users', [FirebaseController::class, 'getUsers']);
+    Route::get('/firebase/users', [FirebaseController::class, 'index'])->name('firebase.user');
     // Admob Settings
     Route::get('/admob-settings', 'Admin\AdmobSettingsController@index')->name('admin.admob_settings');
 

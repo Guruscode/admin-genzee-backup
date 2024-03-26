@@ -19,12 +19,12 @@
                     <div class="profile_info_iner">
                        <div class="profile_author_name">
                         
-                          <h5>{{ Auth::user()->name }} </h5>
+                          <h5>Hi {{ Auth::user()->name }} </h5>
                          
                        </div>
                        <div class="profile_info_details">
-                          <a href="{{route('profile.edit')}}">My Profile </a>
-                          <a href="#">Settings</a>
+                          <a href="{{route('profile.edit')}}">Settings </a>
+                         
                           {{-- <a href="route('profile.edit')">Log Out </a> --}}
                           <form method="POST" action="{{ route('logout') }}">
                             @csrf

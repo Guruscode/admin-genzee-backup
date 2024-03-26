@@ -1,13 +1,4 @@
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Document</title>
-  <style>
-    @import url(https://fonts.googleapis.com/css?family=Roboto:300);
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
 
 .login-page {
   width: 360px;
@@ -39,7 +30,7 @@
   font-family: "Roboto", sans-serif;
   text-transform: uppercase;
   outline: 0;
-  background: #145b96;
+  background: #4CAF50;
   width: 100%;
   border: 0;
   padding: 15px;
@@ -50,7 +41,7 @@
   cursor: pointer;
 }
 .form button:hover,.form button:active,.form button:focus {
-  background: rgb(44, 32, 206);
+  background: #43A047;
 }
 .form .message {
   margin: 15px 0 0;
@@ -98,29 +89,10 @@
   color: #EF3B3A;
 }
 body {
-  background: #F5F7FB; /* fallback for old browsers */
-  background: rgb(13, 14, 13);
-  background: linear-gradient(90deg, #F5F7FB 0%, #c2cada 50%);
+  background: #76b852; /* fallback for old browsers */
+  background: rgb(141,194,111);
+  background: linear-gradient(90deg, rgba(141,194,111,1) 0%, rgba(118,184,82,1) 50%);
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;      
 }
-  </style>
-</head>
-<body>
-  
-  <div class="login-page">
-    <div class="form">
-
-      <form class="login-form" method="POST" action="{{ route('login') }}" >
-        @csrf
-        <input type="text" name="email" placeholder="Enter Your Email"/>
-        <input type="password" name="password" placeholder="Enter Your Password"/>
-        <button>login</button>
-      
-      </form>
-    </div>
-  </div>
-</body>
-</html>
-
