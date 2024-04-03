@@ -8,7 +8,11 @@
             <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
                <div class="page_title_left d-flex align-items-center">
                   <h3 class="f_s_25 f_w_700 dark_text mr_30">Dashboard</h3>
-                  
+                  <!-- send-to-firebase.blade.php -->
+{{-- <form method="post" action="{{ route('send-to-firebase') }}">
+   @csrf
+   <button type="submit">Send Data to Firebase</button>
+</form> --}}
                </div>
                <div class="page_title_right">
                   <div class="page_date_button d-flex align-items-center">
@@ -54,9 +58,10 @@
                            <i class="fas fa-ellipsis-h f_s_11 white_text"></i>
                         </div>
                         <div class="crm_body">
-                           <h4>2455</h4>
+                           <h4>{{ $totalUsers }}</h4>
                            <p>Total Users</p>
-                        </div>
+                       </div>
+                       
                      </div>
                   </div>
                   <div class="col-lg-6">
@@ -69,7 +74,7 @@
                         </div>
                         <div class="crm_body">
                            <h4>{{ $stickerCount }}</h4>
-                           <p>Total Stickers</p>
+                           <p>Total Payments</p>
                         </div>
                      </div>
                   </div>
@@ -102,15 +107,7 @@
                      </div>
                   </div>
                </div>
-               <div class="crm_reports_bnner">
-                  <div class="row justify-content-end ">
-                     <div class="col-lg-6">
-                        <h4>Create CRM Reports</h4>
-                        <p>Outlines keep you and honest indulging honest.</p>
-                        <a href="#">Read More <i class="fas fa-arrow-right"></i> </a>
-                     </div>
-                  </div>
-               </div>
+         
             </div>
          </div>
 
@@ -146,7 +143,19 @@
                         <div class="single_user_pil d-flex align-items-center justify-content-between">
                            <div class="user_pils_thumb d-flex align-items-center">
                            
-                              <span class="f_s_14 f_w_400 text_color_11">Accounts</span>
+                              <span class="f_s_14 f_w_400 text_color_11">Total Users</span>
+                           </div>
+                           <div class="user_info">
+                              {{ $totalUsers }}
+                           </div>
+                           <div class="action_btns d-flex">
+                             
+                           </div>
+                        </div>
+                        <div class="single_user_pil d-flex align-items-center justify-content-between">
+                           <div class="user_pils_thumb d-flex align-items-center">
+                           
+                              <span class="f_s_14 f_w_400 text_color_11">Total Verified Users</span>
                            </div>
                            <div class="user_info">
                               00001
@@ -158,7 +167,7 @@
                         <div class="single_user_pil d-flex align-items-center justify-content-between">
                            <div class="user_pils_thumb d-flex align-items-center">
                            
-                              <span class="f_s_14 f_w_400 text_color_11">Accounts</span>
+                              <span class="f_s_14 f_w_400 text_color_11">All Payments</span>
                            </div>
                            <div class="user_info">
                               00001
@@ -170,7 +179,7 @@
                         <div class="single_user_pil d-flex align-items-center justify-content-between">
                            <div class="user_pils_thumb d-flex align-items-center">
                            
-                              <span class="f_s_14 f_w_400 text_color_11">Accounts</span>
+                              <span class="f_s_14 f_w_400 text_color_11">Total Reports</span>
                            </div>
                            <div class="user_info">
                               00001
@@ -179,30 +188,7 @@
                              
                            </div>
                         </div>
-                        <div class="single_user_pil d-flex align-items-center justify-content-between">
-                           <div class="user_pils_thumb d-flex align-items-center">
-                           
-                              <span class="f_s_14 f_w_400 text_color_11">Accounts</span>
-                           </div>
-                           <div class="user_info">
-                              00001
-                           </div>
-                           <div class="action_btns d-flex">
-                             
-                           </div>
-                        </div>
-                        <div class="single_user_pil d-flex align-items-center justify-content-between">
-                           <div class="user_pils_thumb d-flex align-items-center">
-                           
-                              <span class="f_s_14 f_w_400 text_color_11">Accounts</span>
-                           </div>
-                           <div class="user_info">
-                              00001
-                           </div>
-                           <div class="action_btns d-flex">
-                             
-                           </div>
-                        </div>
+                
                        
                      </div>
               

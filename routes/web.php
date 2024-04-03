@@ -7,7 +7,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\StickersController;
-
+use App\Http\Controllers\Admin\VerifieldController;
+use Kreait\Firebase\Factory;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -26,7 +27,29 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     $stickerCount = Sticker::count();
     $giftCount = Gift::count();
-    return view('dashboard' , compact('stickerCount', 'giftCount'));
+     // Get the path to the JSON file
+     $firebaseCredentialsFile = storage_path('app/genzee-baddies.json');
+       
+     if (!file_exists($firebaseCredentialsFile)) {
+         throw new \Exception('Firebase credentials file not found');
+     }
+
+     // Load Firebase credentials from the JSON file
+     $serviceAccount = json_decode(file_get_contents($firebaseCredentialsFile), true);
+     // Create Firebase Factory with loaded credentials
+     $factory = (new Factory)
+         ->withServiceAccount($serviceAccount);
+     
+     $firestore = $factory->createFirestore();
+     // Get Firestore database instance
+     $database = $firestore->database();
+     // Reference the "users" collection
+     $usersCollection = $database->collection('users');
+     
+     // Get the total count of documents in the "users" collection
+     $totalUsers = $usersCollection->documents()->size();
+     
+    return view('dashboard' , compact('stickerCount', 'giftCount', 'totalUsers'));
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
@@ -48,8 +71,20 @@ Route::prefix('admin')->group(function () {
     Route::post('/stickers', [StickersController::class, 'store'])->name('stickers.store');
     Route::delete('/stickers/{sticker}', [StickersController::class, 'destroy'])->name('stickers.destroy');
 
-    Route::get('/firebase/users', [FirebaseController::class, 'getUsers']);
-    Route::get('/firebase/users', [FirebaseController::class, 'index'])->name('firebase.user');
+    Route::get('/users', [FirebaseController::class, 'index'])->name('users.index');
+    Route::get('/users/{id}/edit', [FirebaseController::class, 'edit'])->name('users.edit');
+    Route::put('/users/{id}', [FirebaseController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [FirebaseController::class, 'destroy'])->name('users.destroy');
+
+
+    Route::get('/verifield', [VerifieldController::class, 'index'])->name('users.verify');
+    Route::get('/verifield/{id}/edit', [VerifieldController::class, 'edit'])->name('verifield.edit');
+    Route::put('/verifield/{id}', [VerifieldController::class, 'update'])->name('verifield.update');
+    Route::delete('/verifield/{id}', [VerifieldController::class, 'destroy'])->name('verifield.destroy');
+
+    Route::post('/send-to-firebase',  [FirebaseController::class, 'sendToFirebase'])->name('send-to-firebase');
+
+
     // Admob Settings
     Route::get('/admob-settings', 'Admin\AdmobSettingsController@index')->name('admin.admob_settings');
 

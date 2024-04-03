@@ -24,7 +24,7 @@
        <li class>
            <a href="{{ route('admin.gifts') }}" aria-expanded="false">
                <div class="nav_icon_small">
-                   <img src="{{asset('img/menu-icon/2.svg')}}" alt="Gifts">
+                   <img src="{{asset('img/menu-icon/12.svg')}}" alt="Gifts">
                </div>
                <div class="nav_title">
                    <span>Gifts</span>
@@ -42,9 +42,9 @@
            </a>
        </li>
        <li class>
-        <a href="{{ route('firebase.user') }}" aria-expanded="false">
+        <a href="{{ route('users.index') }}" aria-expanded="false">
             <div class="nav_icon_small">
-                <img src="{{asset('img/menu-icon/4.svg')}}" alt="Admob Settings">
+                <img src="{{asset('img/menu-icon/5.svg')}}" alt="Admob Settings">
             </div>
             <div class="nav_title">
                 <span>All Users</span>
@@ -52,9 +52,9 @@
         </a>
     </li>
        <li class>
-           <a href="{{ route('admin.admob_settings') }}" aria-expanded="false">
+           <a href="{{ route('users.verify') }}" aria-expanded="false">
                <div class="nav_icon_small">
-                   <img src="{{asset('img/menu-icon/4.svg')}}" alt="Admob Settings">
+                   <img src="{{asset('img/menu-icon/5.svg')}}" alt="Admob Settings">
                </div>
                <div class="nav_title">
                    <span>Verifield Users</span>
@@ -64,7 +64,7 @@
        <li class>
            <a href="{{ route('admin.spam_check_features') }}" aria-expanded="false">
                <div class="nav_icon_small">
-                   <img src="{{asset('img/menu-icon/5.svg')}}" alt="Spam Check Features">
+                   <img src="{{asset('img/menu-icon/11.svg')}}" alt="Spam Check Features">
                </div>
                <div class="nav_title">
                    <span>Payments</span>
@@ -74,7 +74,7 @@
        <li class>
            <a href="{{ route('admin.agora_settings') }}" aria-expanded="false">
                <div class="nav_icon_small">
-                   <img src="{{asset('img/menu-icon/6.svg')}}" alt="Agora Settings">
+                   <img src="{{asset('img/menu-icon/20.svg')}}" alt="Agora Settings">
                </div>
                <div class="nav_title">
                    <span>Report</span>
@@ -96,7 +96,7 @@
        <li class>
            <a href="{{ route('admin.search_users') }}" aria-expanded="false">
                <div class="nav_icon_small">
-                   <img src="{{asset('img/menu-icon/10.svg')}}" alt="Search Users">
+                   <img src="{{asset('img/menu-icon/18.svg')}}" alt="Search Users">
                </div>
                <div class="nav_title">
                    <span>Settings</span>
