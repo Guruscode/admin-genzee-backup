@@ -18,6 +18,7 @@
               <th>Name</th>
               <th>Email</th>
               <th>age</th>
+              <th>phone Number</th>
               <th>Action</th>
             
           </tr>
@@ -28,7 +29,8 @@
             <td>{{ $user['name'] }}</td>
             <td>{{ $user['email'] }}</td>
             <td>{{ $user['age'] }}</td>
-            <!-- Add more columns as needed -->
+            <td>{{ $user['phoneNumber'] }}</td>
+    
             <td>
               <div class="btn-group" role="group" aria-label="User Actions">
                 <a href="{{ route('verifield.edit', $user['uid']) }}" class="btn btn-primary btn-sm m-2">Edit</a>

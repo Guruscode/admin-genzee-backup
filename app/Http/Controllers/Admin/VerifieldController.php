@@ -6,8 +6,69 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
 
+
 class VerifieldController extends Controller
 {
+
+
+    public function dashboard() {
+        $firebaseCredentialsFile = storage_path('app/genzee-baddies.json');
+
+        if (!file_exists($firebaseCredentialsFile)) {
+            throw new \Exception('Firebase credentials file not found');
+        }
+        
+        $serviceAccount = json_decode(file_get_contents($firebaseCredentialsFile), true);
+        
+        $factory = (new Factory)
+            ->withServiceAccount($serviceAccount);
+        
+        $firestore = $factory->createFirestore();
+        
+        $database = $firestore->database();
+        
+        $messagesCollection = $database->collection('complaints');
+        
+        // Get all documents in the messages collection
+        $documents = $messagesCollection->documents();
+    
+        $stickersCollection = $database->collection('stickers');
+        
+        // Get all documents in the messages collection
+        $stickers = $stickersCollection->documents();
+        
+      
+
+        
+        $usersCollection = $database->collection('users');
+        
+        $totalPhoto = 0; // Initialize total photo count
+        
+        // Get all documents in the users collection
+        $userDocuments = $usersCollection->documents();
+        
+        // Iterate over each document in the users collection
+        foreach ($userDocuments as $document) {
+            // Check if the document has a profileImage field and it's not empty
+            if ($document->exists('profileImage') && $document['profileImage']) {
+                $totalPhoto++; // Increment total photo count
+            }
+        }
+    
+        // Filter users where paid is true
+    $paidUsersQuery = $usersCollection->where('paid', '=', true);
+    
+    // Get all documents for paid users
+    $paidUserDocuments = $paidUsersQuery->documents();
+    
+    $totalPaidUsers = $paidUserDocuments->size(); 
+       $totalComplains = $documents->size();
+        $totalUsers = $userDocuments->size();
+        $totalStickers = $stickers->size();
+        
+        return view('dashboard', compact('totalPhoto', 'totalStickers', 'totalUsers', 'totalComplains', 'totalPaidUsers'));
+        
+    }
     public function index()
     {
         // Get the path to the JSON file
@@ -139,6 +200,6 @@ class VerifieldController extends Controller
         $usersCollection->document($id)->delete();
         
         // Redirect back to the users index page or wherever you want after deletion
-        return redirect()->route('verifield.index')->with('success', 'User deleted successfully');
+        return redirect()->route('users.verify')->with('success', 'User deleted successfully');
     }
 }

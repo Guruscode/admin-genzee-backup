@@ -20,7 +20,7 @@
                    <span>Dashboard</span>
                </div>
            </a>
-       </li>
+       </li> <hr><br>
        <li class>
            <a href="{{ route('admin.gifts') }}" aria-expanded="false">
                <div class="nav_icon_small">
@@ -31,17 +31,20 @@
                </div>
            </a>
        </li>
-       <li class>
-           <a href="{{ route('admin.stickers') }}" aria-expanded="false">
-               <div class="nav_icon_small">
-                   <img src="{{asset('img/menu-icon/3.svg')}}" alt="Stickers">
-               </div>
-               <div class="nav_title">
-                   <span>Stickers</span>
-               </div>
-           </a>
-       </li>
-       <li class>
+       <li>
+        <a href="{{ route('admin.stickers') }}" aria-expanded="false">
+            <div class="nav_icon_small">
+                <img src="{{asset('img/menu-icon/3.svg')}}" alt="Stickers">
+            </div>
+            <div class="nav_title">
+                <span>Stickers</span>
+            </div>
+        </a>
+    </li> 
+    <br>
+    <hr> 
+    <br><!-- Add the <hr> tag here to create a line -->
+    <li>
         <a href="{{ route('users.index') }}" aria-expanded="false">
             <div class="nav_icon_small">
                 <img src="{{asset('img/menu-icon/5.svg')}}" alt="Admob Settings">
@@ -51,6 +54,7 @@
             </div>
         </a>
     </li>
+    
        <li class>
            <a href="{{ route('users.verify') }}" aria-expanded="false">
                <div class="nav_icon_small">
@@ -61,7 +65,7 @@
                </div>
            </a>
        </li>
-       <li class>
+       {{-- <li class>
            <a href="{{ route('admin.spam_check_features') }}" aria-expanded="false">
                <div class="nav_icon_small">
                    <img src="{{asset('img/menu-icon/11.svg')}}" alt="Spam Check Features">
@@ -70,9 +74,10 @@
                    <span>Payments</span>
                </div>
            </a>
-       </li>
+       </li> --}}
+       
        <li class>
-           <a href="{{ route('admin.agora_settings') }}" aria-expanded="false">
+           <a href="{{ route('report.index') }}" aria-expanded="false">
                <div class="nav_icon_small">
                    <img src="{{asset('img/menu-icon/20.svg')}}" alt="Agora Settings">
                </div>
@@ -83,18 +88,9 @@
        </li>
      
      
+ <br><hr><br>
        <li class>
-           <a href="{{ route('admin.push_notification') }}" aria-expanded="false">
-               <div class="nav_icon_small">
-                   <img src="{{asset('img/menu-icon/9.svg')}}" alt="Push Notification">
-               </div>
-               <div class="nav_title">
-                   <span>Push Notification</span>
-               </div>
-           </a>
-       </li>
-       <li class>
-           <a href="{{ route('admin.search_users') }}" aria-expanded="false">
+           <a href="{{route('profile.edit')}}" aria-expanded="false">
                <div class="nav_icon_small">
                    <img src="{{asset('img/menu-icon/18.svg')}}" alt="Search Users">
                </div>
@@ -103,6 +99,6 @@
                </div>
            </a>
        </li>
-       <!-- Add other navigation items similarly -->
+    
    </ul>
 </nav>

@@ -114,6 +114,10 @@
   <i class="ti-angle-up"></i>
   </a>
 </div>
+
+
+
+
 <script src="{{asset('js/jquery1-3.4.1.min.js')}}"></script>
 <script src="{{asset('js/popper1.min.js')}}"></script>
 <script src="{{asset('js/bootstrap1.min.js')}}"></script>

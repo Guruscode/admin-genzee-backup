@@ -7,45 +7,27 @@
          <div class="col-12">
             <div class="page_title_box d-flex flex-wrap align-items-center justify-content-between">
                <div class="page_title_left d-flex align-items-center">
-                  <h3 class="f_s_25 f_w_700 dark_text mr_30">Dashboard</h3>
+                  <h3 class="f_s_25 f_w_700 dark_text mr_30">Hello admin, welcome back</h3>
+
                   <!-- send-to-firebase.blade.php -->
 {{-- <form method="post" action="{{ route('send-to-firebase') }}">
    @csrf
    <button type="submit">Send Data to Firebase</button>
 </form> --}}
+
+@if (isset($errorMessage))
+    <div class="alert alert-danger" role="alert">
+        {{ $errorMessage }}
+    </div>
+@endif
+
                </div>
-               <div class="page_title_right">
-                  <div class="page_date_button d-flex align-items-center">
-                     <img src="img/icon/calender_icon.svg" alt> August 1, 2020 - August 31, 2020
-                  </div>
-               </div>
+           
             </div>
          </div>
       </div>
       <div class="row ">
-         {{-- <div class="col-xl-8 ">
-            <div class="white_card mb_30 card_height_100">
-               <div class="white_card_header">
-                  <div class="row align-items-center justify-content-between flex-wrap">
-                     <div class="col-lg-4">
-                        <div class="main-title">
-                           <h3 class="m-0">Stoke Details</h3>
-                        </div>
-                     </div>
-                     <div class="col-lg-4 text-end d-flex justify-content-end">
-                        <select class="nice_Select2 max-width-220">
-                           <option value="1">Show by month</option>
-                           <option value="1">Show by year</option>
-                           <option value="1">Show by day</option>
-                        </select>
-                     </div>
-                  </div>
-               </div>
-               <div class="white_card_body">
-                  <div id="management_bar"></div>
-               </div>
-            </div>
-         </div> --}}
+       
          <div class="col-xl-12 ">
             <div class="white_card card_height_100 mb_30 user_crm_wrapper">
                <div class="row">
@@ -73,8 +55,8 @@
                            <i class="fas fa-ellipsis-h f_s_11 white_text"></i>
                         </div>
                         <div class="crm_body">
-                           <h4>{{ $stickerCount }}</h4>
-                           <p>Total Payments</p>
+                           <h4>{{ $totalPhoto }}</h4>
+                           <p>Total photos</p>
                         </div>
                      </div>
                   </div>
@@ -87,8 +69,8 @@
                            <i class="fas fa-ellipsis-h f_s_11 white_text"></i>
                         </div>
                         <div class="crm_body">
-                           <h4>{{ $giftCount }}</h4>
-                           <p>Total Gifts</p>
+                           <h4>{{ $totalStickers }}</h4>
+                           <p>Total Stickers</p>
                         </div>
                      </div>
                   </div>
@@ -101,8 +83,8 @@
                            <i class="fas fa-ellipsis-h f_s_11 white_text"></i>
                         </div>
                         <div class="crm_body">
-                           <h4>2455</h4>
-                           <p>Total chats</p>
+                           <h4>{{ $totalComplains }}</h4>
+                           <p> Total Complains</p>
                         </div>
                      </div>
                   </div>
@@ -143,10 +125,10 @@
                         <div class="single_user_pil d-flex align-items-center justify-content-between">
                            <div class="user_pils_thumb d-flex align-items-center">
                            
-                              <span class="f_s_14 f_w_400 text_color_11">Total Users</span>
+                              <span class="f_s_14 f_w_400 text_color_11"><b>Total Users</b></span>
                            </div>
                            <div class="user_info">
-                              {{ $totalUsers }}
+                             <h2> {{ $totalUsers }}</h2>
                            </div>
                            <div class="action_btns d-flex">
                              
@@ -155,22 +137,23 @@
                         <div class="single_user_pil d-flex align-items-center justify-content-between">
                            <div class="user_pils_thumb d-flex align-items-center">
                            
-                              <span class="f_s_14 f_w_400 text_color_11">Total Verified Users</span>
+                              <span class="f_s_14 f_w_400 text_color_11"><b>Total Verified</b></span>
                            </div>
                            <div class="user_info">
-                              00001
+                            <h2>  {{ $totalPaidUsers }}</h2>
                            </div>
                            <div class="action_btns d-flex">
                              
                            </div>
                         </div>
+                  
                         <div class="single_user_pil d-flex align-items-center justify-content-between">
                            <div class="user_pils_thumb d-flex align-items-center">
                            
-                              <span class="f_s_14 f_w_400 text_color_11">All Payments</span>
+                              <span class="f_s_14 f_w_400 text_color_11"><b>Reports</b></span>
                            </div>
                            <div class="user_info">
-                              00001
+                             <h2> {{ $totalComplains }}</h2>
                            </div>
                            <div class="action_btns d-flex">
                              
@@ -199,9 +182,23 @@
          </div>
 
 
+         <div class="col-lg-6">
+            <div class="single_crm">
+                <div class="crm_body">
+                    <h4>{{ $totalUsers }}</h4>
+                    <p>Total Users</p>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <canvas id="userPieChart" width="200" height="200"></canvas> <!-- Pie chart -->
+                    <canvas id="userBarChart" width="200" height="200"></canvas> <!-- Bar chart -->
+                </div>
+            </div>
+        </div>
+        
+        
       
        
-         <div class="col-xl-12">
+         {{-- <div class="col-xl-12">
             <div class="white_card card_height_100  mb_20">
                <div class="white_card_header">
                   <div class="box_header m-0">
@@ -280,9 +277,76 @@
                   </div>
                </div>
             </div>
-         </div>
+         </div> --}}
 
       </div>
    </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+   var pieCtx = document.getElementById('userPieChart').getContext('2d');
+   var barCtx = document.getElementById('userBarChart').getContext('2d');
+
+   var pieChart = new Chart(pieCtx, {
+       type: 'pie',
+       data: {
+           labels: ['Total Users', 'Other Users'],
+           datasets: [{
+               data: [{{ $totalUsers }}, 100 - {{ $totalUsers }}], // Percentage of total users and other users
+               backgroundColor: [
+                   'rgba(255, 99, 132, 0.8)', // Red color for total users
+                   'rgba(54, 162, 235, 0.8)'   // Blue color for other users
+               ],
+               borderColor: [
+                   'rgba(255, 99, 132, 1)',
+                   'rgba(54, 162, 235, 1)'
+               ],
+               borderWidth: 1
+           }]
+       },
+       options: {
+           responsive: true,
+           legend: {
+               position: 'top',
+           },
+           title: {
+               display: false,
+               text: 'Total Users'
+           },
+           animation: {
+               animateScale: true,
+               animateRotate: true
+           }
+       }
+   });
+
+   var barChart = new Chart(barCtx, {
+       type: 'bar',
+       data: {
+           labels: ['Total Users'],
+           datasets: [{
+               label: 'Total Users',
+               data: [{{ $totalUsers }}], // Total number of users
+               backgroundColor: 'rgba(255, 99, 132, 0.8)', // Red color for bars
+               borderColor: 'rgba(255, 99, 132, 1)',
+               borderWidth: 1
+           }]
+       },
+       options: {
+           responsive: true,
+           legend: {
+               display: false
+           },
+           scales: {
+               yAxes: [{
+                   ticks: {
+                       beginAtZero: true
+                   }
+               }]
+           }
+       }
+   });
+</script>
+
 @include('dash.footer')

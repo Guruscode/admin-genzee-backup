@@ -116,7 +116,7 @@ body {
         @csrf
         <input type="text" name="email" placeholder="Enter Your Email"/>
         <input type="password" name="password" placeholder="Enter Your Password"/>
-        <button>login</button>
+        <button style="font-size: 20px">log in</button>
       
       </form>
     </div>
