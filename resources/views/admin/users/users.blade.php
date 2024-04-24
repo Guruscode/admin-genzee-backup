@@ -38,7 +38,7 @@
   <table class="table mt-4">
     <thead>
         <tr>
-            <th> <input type="checkbox" ></th> <!-- Add a new column for checkboxes -->
+            <th></th> <!-- Add a new column for checkboxes -->
             <th>Name</th>
             <th>Email</th>
             <th>Age</th> 
