@@ -5,15 +5,21 @@ use App\Models\Sticker;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FirebaseController;
+use App\Http\Controllers\HelpPageController;
 use App\Http\Controllers\Admin\GiftsController;
 use App\Http\Controllers\Admin\StickersController;
 use App\Http\Controllers\Admin\VerifieldController;
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
+Route::get('/', [VerifieldController::class, 'home'])->name('home');
+Route::get('/about', [VerifieldController::class, 'about'])->name('about');
+Route::get('/pricing', [VerifieldController::class, 'price'])->name('price');
+Route::get('/help', [HelpPageController::class, 'index'])->name('help.index');
+Route::post('/help', [HelpPageController::class, 'store'])->name('help.store');
+
+
 
 
 Route::get('/dashboard', [VerifieldController::class, 'dashboard'])->middleware(['auth', 'verified'])->name('dashboard');
@@ -38,11 +44,12 @@ Route::prefix('admin')->group(function () {
     Route::delete('/stickers/{sticker}', [StickersController::class, 'destroy'])->name('stickers.destroy');
 
     Route::get('/users', [FirebaseController::class, 'index'])->name('users.index');
-    Route::get('/Reports', [FirebaseController::class, 'index2'])->name('report.index');
-    Route::get('/users/{id}/edit', [FirebaseController::class, 'edit'])->name('users.edit');
+    Route::get('/users/{id}/edit', [FirebaseController::class, 'useredit'])->name('users.edit');
+
+
     Route::put('/users/{id}', [FirebaseController::class, 'update'])->name('users.update');
     Route::delete('/users/{id}', [FirebaseController::class, 'destroy'])->name('users.destroy');
-
+    Route::get('/Reports', [FirebaseController::class, 'index2'])->name('report.index');
 
     Route::get('/verifield', [VerifieldController::class, 'index'])->name('users.verify');
     Route::get('/verifield/{id}/edit', [VerifieldController::class, 'edit'])->name('verifield.edit');
@@ -52,7 +59,6 @@ Route::prefix('admin')->group(function () {
     Route::post('/send-to-firebase',  [FirebaseController::class, 'sendToFirebase'])->name('send-to-firebase');
 
 });
-
 
 
 

@@ -54,7 +54,16 @@
             </div>
         </a>
     </li>
-    
+    <li class>
+        <a href="" aria-expanded="false">
+            <div class="nav_icon_small">
+                <img src="{{asset('img/menu-icon/5.svg')}}" alt="Admob Settings">
+            </div>
+            <div class="nav_title">
+                <span>Payments</span>
+            </div>
+        </a>
+    </li>
        <li class>
            <a href="{{ route('users.verify') }}" aria-expanded="false">
                <div class="nav_icon_small">

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+use GuzzleHttp\Client;
+use App\Mail\CodeEmail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +12,6 @@ use Kreait\Firebase\ServiceAccount;
 use Illuminate\Support\Facades\Mail;
 use Google\Cloud\Firestore\FirestoreClient;
 use Kreait\Firebase\Factory; // Use correct namespace
-use App\Mail\CodeEmail;
 
 
 
@@ -18,115 +19,216 @@ use App\Mail\CodeEmail;
 class FirebaseController extends Controller
 {
 
-
-public function index()
-{
-    // Get the path to the JSON file
-    $firebaseCredentialsFile = storage_path('app/genzee-baddies.json');
-
-    if (!file_exists($firebaseCredentialsFile)) {
-        throw new \Exception('Firebase credentials file not found');
+    public function index()
+    {
+        // Initialize GuzzleHTTP client
+        $client = new Client([
+            'base_uri' => 'https://firestore.googleapis.com/v1/projects/genzee-baddies-1/databases/(default)/documents/',
+        ]);
+    
+        try {
+            // Send request to fetch users data
+            $response = $client->get('users');
+            $usersData = json_decode($response->getBody()->getContents(), true);
+    
+            $users = [];
+    
+            // Iterate through each document in the users collection
+            foreach ($usersData['documents'] as $document) {
+                // Extract user data from the document
+                $userData = $document['fields'];
+    
+                // Add the user data to the array
+                $users[] = $userData;
+            }
+    
+            // Paginate the user data
+            $perPage = 10; // Number of items per page
+            $currentPage = request()->query('page', 1); // Get the current page from the query string
+            $usersPaginated = \Illuminate\Pagination\Paginator::resolveCurrentPage('usersPage');
+            $usersPaginated = array_slice($users, ($currentPage - 1) * $perPage, $perPage);
+            $usersPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+                $usersPaginated,
+                count($users),
+                $perPage,
+                $currentPage,
+                ['path' => url()->current()]
+            );
+    
+            // Pass user data to the view
+            return view('admin.users.users', [
+                'users' => $users, // Pass the $users variable to the view
+                'usersPaginated' => $usersPaginated,
+            ]);
+        } catch (\Exception $e) {
+            // Handle error
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
-
-    // Load Firebase credentials from the JSON file
-    $serviceAccount = json_decode(file_get_contents($firebaseCredentialsFile), true);
+    public function useredit($id)
+    {
+        // Initialize GuzzleHTTP client
+        $client = new Client([
+            'base_uri' => 'https://firestore.googleapis.com/v1/projects/genzee-baddies-1/databases/(default)/documents/',
+        ]);
     
-    // Create Firebase Factory with loaded credentials
-    $factory = (new Factory)->withServiceAccount($serviceAccount);
-    $firestore = $factory->createFirestore();
+        try {
+            // Send request to fetch user data by ID
+            $response = $client->get("users/$id");
+            $userData = json_decode($response->getBody()->getContents(), true);
     
-    // Get Firestore database instance
-    $database = $firestore->database();
+            if(isset($userData['fields'])) {
+                // Extract user data from the document
+                $userData = $userData['fields'];
+                
+                // Pass user data to the view for editing
+                return view('admin.users.edit', ['user' => $userData]);
+            } else {
+                // User not found
+                return response()->json(['error' => 'User not found'], 404);
+            }
+        } catch (\Exception $e) {
+            // Handle error
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }    
+    public function update(Request $request, $id)
+    {
+        // Initialize GuzzleHTTP client
+        $client = new Client([
+            'base_uri' => 'https://firestore.googleapis.com/v1/projects/genzee-baddies-1/databases/(default)/documents/',
+        ]);
     
-    // Reference the "users" collection
-    $usersCollection = $database->collection('users');
-     
-    // Get all documents within the "users" collection
-    $documents = $usersCollection->documents();
+        try {
+            // Convert the string value to boolean
+            $paid = filter_var($request->input('paid'), FILTER_VALIDATE_BOOLEAN);
     
-    // Initialize an empty array to store user data
-    $usersData = [];
+            // Prepare the data to be updated
+            $userData = [
+                'name' => $request->input('name'),
+                'email' => $request->input('email'),
+                'about' => $request->input('about'),
+                'age' => $request->input('age'),
+                'children' => $request->input('children'),
+                'city' => $request->input('city'),
+                'country' => $request->input('country'),
+                'dob' => $request->input('dob'),
+                'gender' => $request->input('gender'),
+                'genotype' => $request->input('genotype'),
+                'height' => $request->input('height'),
+                'hideAccount' => $request->input('hideAccount'),
+                'lastOnline' => $request->input('lastOnline'),
+                'latitude' => $request->input('latitude'),
+                'longitude' => $request->input('longitude'),
+                'online' => $request->input('online'),
+                'paid' => $paid, // Store as boolean
+                'phoneNumber' => $request->input('phoneNumber'),
+                'preference' => $request->input('preference'),
+                'state' => $request->input('state'),
+                'status' => $request->input('status'),
+                'university' => $request->input('university'),
+                'verified' => $request->input('verified'),
+                'weight' => $request->input('weight'),
+                // Add more fields as needed
+            ];
     
-    // Iterate over the documents and store the data in the array
-    foreach ($documents as $document) {
-        // Get the document data
-        $userData = $document->data();
-        // Append the user data to the array
-        $usersData[] = $userData;
+            // Send PUT request to update user data
+            $response = $client->put("users/$id", [
+                'json' => ['fields' => $userData]
+            ]);
+    
+            // Check if update was successful
+            if ($response->getStatusCode() === 200) {
+                // Redirect back to the users index page after successful update
+                return redirect()->route('users.index')->with('success', 'User updated successfully');
+            } else {
+                // Handle update failure
+                return redirect()->back()->with('error', 'Failed to update user. Please try again.');
+            }
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
+    
 
-    $usersCollection = $database->collection('users');
-        
 
-  
 
-    // Filter users where paid is true
-$paidUsersQuery = $usersCollection->where('paid', '=', true);
 
-// Get all documents for paid users
-$paidUserDocuments = $paidUsersQuery->documents();
 
-$totalVerified = $paidUserDocuments->size(); 
-    $totalUsers = $documents->size();
-    // Paginate the user data
-    $perPage = 10; // Number of items per page
-    $currentPage = request()->query('page', 1); // Get the current page from the query string
-    $usersPaginated = \Illuminate\Pagination\Paginator::resolveCurrentPage('usersPage');
-    $usersPaginated = array_slice($usersData, ($currentPage - 1) * $perPage, $perPage);
-    $usersPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
-        $usersPaginated,
-        count($usersData),
-        $perPage,
-        $currentPage,
-        ['path' => url()->current()]
-    );
 
-    // Pass paginated user data to the view and render the view
-    return view('admin.users.users', [
-        'usersPaginated' => $usersPaginated,
-        'totalUsers' => $totalUsers,
-        'totalVerified' => $totalVerified,
-     
-    ]);
-}
 
-     public function index2()
-     {
-         // Get the path to the JSON file
-         $firebaseCredentialsFile = storage_path('app/genzee-baddies.json');
-        
-         if (!file_exists($firebaseCredentialsFile)) {
-             throw new \Exception('Firebase credentials file not found');
-         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public function index2()
+    {
+        try {
+            // Initialize GuzzleHTTP client
+            $client = new Client([
+                'base_uri' => 'https://firestore.googleapis.com/v1/projects/genzee-baddies-1/databases/(default)/documents/',
+            ]);
+    
+            // Send request to fetch complaints data
+            $response = $client->get('complaints');
+            $complaintsData = json_decode($response->getBody()->getContents(), true)['documents'];
+    
+            // Initialize an empty array to store complaint data
+            $complaints = [];
+    
+            // Iterate through each document in the complaints collection
+            foreach ($complaintsData as $document) {
+                // Extract complaint data from the document
+                $complaint = $document['fields'];
+                // Add the complaint data to the array
+                $complaints[] = $complaint;
+            }
+    
+            // Paginate the complaint data
+            $perPage = 10; // Number of items per page
+            $currentPage = request()->query('page', 1); // Get the current page from the query string
+            $complaintsPaginated = \Illuminate\Pagination\Paginator::resolveCurrentPage('complaintsPage');
+            $complaintsPaginated = array_slice($complaints, ($currentPage - 1) * $perPage, $perPage);
+            $complaintsPaginated = new \Illuminate\Pagination\LengthAwarePaginator(
+                $complaintsPaginated,
+                count($complaints),
+                $perPage,
+                $currentPage,
+                ['path' => url()->current()]
+            );
+    
+            // Pass complaint data to the view and render the view
+            return view('admin.reports.index', ['complaintsPaginated' => $complaintsPaginated]);
+        } catch (\Exception $e) {
+            // Handle error
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    
  
-         // Load Firebase credentials from the JSON file
-         $serviceAccount = json_decode(file_get_contents($firebaseCredentialsFile), true);
-         // Create Firebase Factory with loaded credentials
-          $factory = (new Factory)
-         ->withServiceAccount($serviceAccount);
-                 $firestore = $factory->createFirestore();
-                 // Get Firestore database instance
-                 $database = $firestore->database();
-                 // Reference the "users" collection
-                 $usersCollection = $database->collection('complaints');
-                 // Get all documents within the "users" collection
-                 $documents = $usersCollection->documents();
-                 // Initialize an empty array to store user data
-                 $usersData = [];
-                 // Iterate over the documents and store the data in the array
-                 foreach ($documents as $document) {
-                     // Get the document data
-                     $userData = $document->data();
-                     // Append the user data to the array
-                     $usersData[] = $userData;
-                 }
-                 // Pass user data to the view and render the view
-                 return view('admin.reports.index', ['usersData' => $usersData]);
-      }
- 
-
-     public function edit($id)
-{
+ public function edit($id)
+    {
     // Get the path to the JSON file
     $firebaseCredentialsFile = storage_path('app/genzee-baddies.json');
    
@@ -159,7 +261,7 @@ $totalVerified = $paidUserDocuments->size();
     return view('admin.users.edit', ['userData' => $userData]);
 }
 
-public function update(Request $request, $id)
+public function uepdate(Request $request, $id)
 {
     // Get the path to the JSON file
     $firebaseCredentialsFile = storage_path('app/genzee-baddies.json');

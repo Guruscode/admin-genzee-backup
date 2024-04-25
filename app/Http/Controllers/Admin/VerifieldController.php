@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Kreait\Firebase\Factory;
+use App\Http\Controllers\Controller;
 
 
 class VerifieldController extends Controller
@@ -12,62 +13,65 @@ class VerifieldController extends Controller
 
 
     public function dashboard() {
-        $firebaseCredentialsFile = storage_path('app/genzee-baddies.json');
-
-        if (!file_exists($firebaseCredentialsFile)) {
-            throw new \Exception('Firebase credentials file not found');
-        }
-        
-        $serviceAccount = json_decode(file_get_contents($firebaseCredentialsFile), true);
-        
-        $factory = (new Factory)
-            ->withServiceAccount($serviceAccount);
-        
-        $firestore = $factory->createFirestore();
-        
-        $database = $firestore->database();
-        
-        $messagesCollection = $database->collection('complaints');
-        
-        // Get all documents in the messages collection
-        $documents = $messagesCollection->documents();
+        // Initialize GuzzleHTTP client
+        $client = new Client([
+            'base_uri' => 'https://firestore.googleapis.com/v1/projects/genzee-baddies-1/databases/(default)/documents/',
+        ]);
     
-        $stickersCollection = $database->collection('stickers');
-        
-        // Get all documents in the messages collection
-        $stickers = $stickersCollection->documents();
-        
-      
-
-        
-        $usersCollection = $database->collection('users');
-        
-        $totalPhoto = 0; // Initialize total photo count
-        
-        // Get all documents in the users collection
-        $userDocuments = $usersCollection->documents();
-        
-        // Iterate over each document in the users collection
-        foreach ($userDocuments as $document) {
-            // Check if the document has a profileImage field and it's not empty
-            if ($document->exists('profileImage') && $document['profileImage']) {
-                $totalPhoto++; // Increment total photo count
+        try {
+            // Fetch complaints data
+            $responseComplaints = $client->get('complaints');
+            $complaintsData = json_decode($responseComplaints->getBody()->getContents(), true);
+    
+            $totalComplains = count($complaintsData['documents']);
+    
+            // Fetch stickers data
+            $responseStickers = $client->get('stickers');
+            $stickersData = json_decode($responseStickers->getBody()->getContents(), true);
+    
+            $totalStickers = count($stickersData['documents']);
+    
+            // Fetch users data
+            $responseUsers = $client->get('users');
+            $usersData = json_decode($responseUsers->getBody()->getContents(), true);
+    
+            $totalPhoto = 0; // Initialize total photo count
+            $totalPaidUsers = 0; // Initialize total paid users count
+    
+            // Iterate over each user document
+            foreach ($usersData['documents'] as $user) {
+                // Check if the user has a profileImage field and it's not empty
+                if (isset($user['fields']['profileImage']) && !empty($user['fields']['profileImage'])) {
+                    $totalPhoto++; // Increment total photo count
+                }
+    
+                // Check if the user is paid
+                if (isset($user['fields']['paid']) && $user['fields']['paid'] == true) {
+                    $totalPaidUsers++; // Increment total paid users count
+                }
             }
+    
+            // Total users count
+            $totalUsers = count($usersData['documents']);
+    
+            return view('dashboard', compact('totalPhoto', 'totalStickers', 'totalUsers', 'totalComplains', 'totalPaidUsers'));
+        } catch (\Exception $e) {
+            // Handle error
+            // You can log the error for debugging purposes
+            // Log::error($e->getMessage());
+            // Redirect back to the dashboard with error message
+            return redirect()->route('dashboard')->with('error', 'Failed to fetch data. Please try again.');
         }
-    
-        // Filter users where paid is true
-    $paidUsersQuery = $usersCollection->where('paid', '=', true);
-    
-    // Get all documents for paid users
-    $paidUserDocuments = $paidUsersQuery->documents();
-    
-    $totalPaidUsers = $paidUserDocuments->size(); 
-       $totalComplains = $documents->size();
-        $totalUsers = $userDocuments->size();
-        $totalStickers = $stickers->size();
-        
-        return view('dashboard', compact('totalPhoto', 'totalStickers', 'totalUsers', 'totalComplains', 'totalPaidUsers'));
-        
+    }
+    public function home() {
+        return view('welcome');
+    }
+    public function about() {
+        return view('about');
+    }
+
+    public function price() {
+        return view('pricing');
     }
     public function index()
     {

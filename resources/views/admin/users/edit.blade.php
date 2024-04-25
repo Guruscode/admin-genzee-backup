@@ -7,7 +7,12 @@
       <div class="col-md-12">
           <div class="card">
               <div class="card-header bg-info text-white m-3">Edit User Data</div>
-
+              @if(session('error'))
+              <div class="alert alert-danger">
+                  {{ session('error') }}
+              </div>
+          @endif
+          
 
               <form action="{{ route('users.update', $userData['uid']) }}" method="POST">
                 @csrf
@@ -85,15 +90,7 @@
                             <label for="lastOnline">Last Online</label>
                             <input type="text" class="form-control" name="lastOnline" id="lastOnline" value="{{ $userData['lastOnline'] }}">
                         </div>
-                        <div class="form-group  m-2">
-                            <label for="latitude">Latitude</label>
-                            <input type="text" class="form-control" name="latitude" id="latitude" value="{{ $userData['latitude'] }}">
-                        </div>
-                    
-                        <div class="form-group  m-2">
-                            <label for="longitude">Longitude</label>
-                            <input type="text" class="form-control" name="longitude" id="longitude" value="{{ $userData['longitude'] }}">
-                        </div>
+                   
                    
                         <div class="form-group m-2">
                             <label for="online">Online</label>
@@ -151,8 +148,7 @@
                     </div>
                 </div>
                 
-                <!-- Add more rows and columns for additional fields if needed -->
-            
+              
                 <button type="submit" class="btn-sm btn-info m-3">Update</button>
             </form>
             
